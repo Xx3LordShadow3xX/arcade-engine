@@ -128,11 +128,20 @@ export default class Ghost {
     }
 
     if (this.state === GHOST_STATE.LEAVING) {
-      // Move toward ghost door exit (row 11, col 14)
+      // Move toward ghost house exit (row 11, col 14) via straight-line pixel movement
       const exitCol = 14, exitRow = 11;
       this._moveToward(exitCol, exitRow, dt);
       const dist = Math.abs(this._col - exitCol) + Math.abs(this._row - exitRow);
-      if (dist === 0 && this._progress > 0.9) {
+      if (dist === 0 && this._progress >= 1) {
+        // FIX BUG-2: synchronize _targetCol/_targetRow with actual position before
+        // entering _moveTile() to prevent ghost teleporting back to spawn position.
+        // _moveToward() updates _col/_row but NOT _targetCol/_targetRow, so the
+        // first call to _moveTile() would overwrite _col/_row with stale start pos.
+        this._targetCol = this._col;
+        this._targetRow = this._row;
+        this._prevCol   = this._col;
+        this._prevRow   = this._row;
+        this._progress  = 0;
         this.state = GHOST_STATE.SCATTER;
       }
       return;
@@ -230,7 +239,6 @@ export default class Ghost {
   }
 
   _drawBody(ctx, x, y, r, color, glowBlur) {
-    const ts = this._ts;
     const wave = Math.sin(this._bodyWave);
 
     ctx.shadowColor = color;

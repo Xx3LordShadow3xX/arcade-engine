@@ -111,12 +111,32 @@ export default class GameEngine {
       if (!container) return;
       const w = container.clientWidth;
       const h = container.clientHeight;
+      if (w === 0 || h === 0) return;
       this.renderer.resize(w, h);
       this._activeGame?.onResize?.(w, h);
       EventBus.emit('engine:resize', { w, h });
     };
+
     window.addEventListener('resize', resize);
-    // Initial sizing — defer to next microtask so DOM is ready
+
+    // FIX BUG-11: listen for devicePixelRatio changes caused by browser zoom.
+    // Standard 'resize' events are NOT fired on zoom in all browsers (e.g. Firefox).
+    // We use matchMedia on a resolution query that fires when DPR changes.
+    let _dprMediaQuery = null;
+    const onDPRChange = () => {
+      resize();
+      // Re-register for the new DPR value after zoom change
+      _setupDPRListener(); // eslint-disable-line no-use-before-define
+    };
+    const _setupDPRListener = () => {
+      if (_dprMediaQuery) _dprMediaQuery.removeEventListener('change', onDPRChange);
+      const dpr = window.devicePixelRatio || 1;
+      _dprMediaQuery = window.matchMedia(`(resolution: ${dpr}dppx)`);
+      _dprMediaQuery.addEventListener('change', onDPRChange);
+    };
+    _setupDPRListener();
+
+    // Initial sizing — defer to next microtask so DOM layout is complete
     Promise.resolve().then(resize);
   }
 }

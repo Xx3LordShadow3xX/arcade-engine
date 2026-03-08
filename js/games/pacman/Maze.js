@@ -180,8 +180,7 @@ export default class Maze {
     const left  = this._grid.getTile(col-1, row) !== TILE.WALL;
     const right = this._grid.getTile(col+1, row) !== TILE.WALL;
 
-    // Neon glow on exposed edges
-    const glowAlpha = 0.7 + 0.3 * Math.sin(this._wallGlowPhase);
+    // Neon glow on exposed edges — intensity pulses with wall glow phase
     ctx.strokeStyle = COLORS.WALL;
     ctx.lineWidth = 1.5;
     ctx.shadowColor = COLORS.WALL_GLOW;

@@ -72,10 +72,17 @@ export default class PacmanPlayer {
     this._deathDone = false;
   }
 
-  get gridPos()  { return { col: this._col, row: this._row }; }
-  get worldPos() { return { x: this._x, y: this._y }; }
-  get isDead()   { return this._deathDone; }
-  get isDying()  { return this._dying; }
+  get gridPos()   { return { col: this._col, row: this._row }; }
+  get worldPos()  { return { x: this._x, y: this._y }; }
+  get isDead()    { return this._deathDone; }
+  get isDying()   { return this._dying; }
+
+  /**
+   * Current movement direction as a plain {x, y} object.
+   * FIX BUG-1: was missing — caused TypeError crash in GhostAI._chaseTarget()
+   * when Pinky and Inky entered chase mode (pacman.dirVector was undefined).
+   */
+  get dirVector() { return { x: this._dir.x, y: this._dir.y }; }
 
   die() {
     if (this._dying) return;
@@ -111,7 +118,7 @@ export default class PacmanPlayer {
     const maze  = this._maze;
 
     // Try to turn into buffered direction when aligned to grid
-    const alignThreshold = speed + 1;
+    const alignThreshold = speed + 2; // slightly generous threshold for smooth turns
     const centerX = this._col * ts + ts / 2;
     const centerY = this._row * ts + ts / 2;
 

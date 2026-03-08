@@ -14,9 +14,8 @@ import InputManager from './engine/InputManager.js';
 import EventBus     from './core/EventBus.js';
 
 // ─── DOM references ─────────────────────────────────────────────────────────
-const canvas     = document.getElementById('game-canvas');
-const appRoot    = document.getElementById('app');
-const overlayEl  = document.getElementById('overlay');
+const canvas    = document.getElementById('game-canvas');
+const overlayEl = document.getElementById('overlay');
 
 // ─── Engine ─────────────────────────────────────────────────────────────────
 const engine = new GameEngine(canvas, { targetFPS: 60 });
@@ -29,15 +28,11 @@ const menuSys   = new MenuSystem(screenMgr);
 menuSys.buildStartScreen(overlayEl);
 menuSys.buildPauseScreen(overlayEl);
 
-// ─── Resize canvas to fill its container ───────────────────────────────────
-function resizeCanvas() {
-  const container = canvas.parentElement;
-  const W = container.clientWidth;
-  const H = container.clientHeight;
-  engine.renderer.resize(W, H);
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
+// FIX BUG-5: Removed duplicate resize handler.
+// GameEngine._setupResize() already manages canvas sizing, DPR scaling,
+// window resize events, and zoom (matchMedia DPR listener). Adding a second
+// resize listener here caused the canvas transform to be reset and re-applied
+// twice on every resize, and the DPR/zoom fix in GameEngine was bypassed.
 
 // ─── Start flow ─────────────────────────────────────────────────────────────
 let gameStarted = false;
@@ -58,7 +53,8 @@ async function startGame() {
 menuSys.onStart(startGame);
 
 // ─── Pause / resume wiring ───────────────────────────────────────────────────
-InputManager.init();
+// Note: InputManager.init() is also called inside GameEngine constructor.
+// The guard (this._bound) makes the second call a no-op; safe to remove here.
 
 window.addEventListener('keydown', (e) => {
   if (!gameStarted) return;

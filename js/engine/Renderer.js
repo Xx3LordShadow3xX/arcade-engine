@@ -35,11 +35,18 @@ export default class Renderer {
   get height() { return this._logicalHeight; }
 
   resize(logicalW, logicalH) {
+    // FIX BUG-3: refresh DPR on every resize so browser zoom is handled correctly.
+    // The constructor captures DPR once; zoom changes it without notifying the renderer.
+    this._dpr = window.devicePixelRatio || 1;
     const dpr = this._dpr;
+
     this._logicalWidth  = logicalW;
     this._logicalHeight = logicalH;
-    this.canvas.width  = logicalW * dpr;
-    this.canvas.height = logicalH * dpr;
+
+    // Setting canvas.width/height resets the 2D context transform to identity.
+    // We re-apply the DPR scale immediately after.
+    this.canvas.width  = Math.round(logicalW * dpr);
+    this.canvas.height = Math.round(logicalH * dpr);
     this.canvas.style.width  = `${logicalW}px`;
     this.canvas.style.height = `${logicalH}px`;
     this.ctx.scale(dpr, dpr);

@@ -91,9 +91,14 @@ export default class PacmanGame {
 
   init() {
     this._score.reset();
-    // Register one-time event subscriptions
-    EventBus.on('score:extraLife',  () => this._audio.play('extraLife'));
-    EventBus.on('power:collected',  () => this._frightenAllGhosts());
+    // Register event subscriptions and store unsubscribe handles.
+    // FIX BUG-4: destroy() previously called EventBus.clear() which removed ALL
+    // listeners including those registered in main.js (score:changed → hi-score display).
+    // Now we track only this game's own listeners and unsubscribe only those on destroy.
+    this._unsubs = [
+      EventBus.on('score:extraLife', () => this._audio.play('extraLife')),
+      EventBus.on('power:collected', () => this._frightenAllGhosts()),
+    ];
     this._startLevel();
   }
 
@@ -117,7 +122,11 @@ export default class PacmanGame {
   }
 
   destroy() {
-    EventBus.clear();
+    // FIX BUG-4: only unsubscribe this game's own listeners, not the entire EventBus.
+    if (this._unsubs) {
+      this._unsubs.forEach(unsub => unsub());
+      this._unsubs = [];
+    }
   }
 
   // ─── Main update ──────────────────────────────────────────────────────────
@@ -255,7 +264,10 @@ export default class PacmanGame {
           this._ghostEatenTimer = 0.6;
           this._frozenGhost = ghost;
         } else if (ghost.state !== GHOST_STATE.EATEN &&
-                   ghost.state !== GHOST_STATE.HOUSE) {
+                   ghost.state !== GHOST_STATE.HOUSE &&
+                   ghost.state !== GHOST_STATE.LEAVING) {
+          // FIX BUG-6: LEAVING state was missing from the exclusion list.
+          // A ghost exiting the house could incorrectly trigger Pac-Man's death.
           this._state = STATE.DYING;
           this._player.die();
           this._audio.play('death');
