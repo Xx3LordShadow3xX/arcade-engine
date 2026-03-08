@@ -1,0 +1,184 @@
+/* ui.css — Menu screens, HUD overlays, buttons */
+
+/* ─── Start Screen ─────────────────────────────────────────────────────────── */
+
+.start-screen {
+  background: radial-gradient(ellipse at center, #000035 0%, #000010 60%, #000008 100%);
+}
+
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding: 40px 24px;
+  max-width: 480px;
+  width: 100%;
+}
+
+/* Title block */
+.title-block {
+  text-align: center;
+}
+
+.title-sub {
+  font-family: var(--font-arcade);
+  font-size: 11px;
+  color: #555;
+  letter-spacing: 6px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.title-main {
+  font-family: 'Press Start 2P', var(--font-arcade);
+  font-size: clamp(28px, 6vw, 52px);
+  letter-spacing: 4px;
+  line-height: 1.2;
+  user-select: none;
+}
+
+.title-tagline {
+  font-family: var(--font-arcade);
+  font-size: 11px;
+  color: var(--neon-blue);
+  letter-spacing: 4px;
+  margin-top: 14px;
+  text-shadow: var(--glow-blue);
+  text-transform: uppercase;
+}
+
+/* Ghost preview row */
+.ghost-preview {
+  display: flex;
+  gap: 20px;
+  font-size: 36px;
+}
+
+/* Buttons */
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 280px;
+}
+
+.btn {
+  padding: 14px 28px;
+  font-family: 'Press Start 2P', var(--font-arcade);
+  font-size: 13px;
+  letter-spacing: 2px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform 0.1s, filter 0.1s;
+  width: 100%;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn-primary {
+  background: var(--neon-yellow);
+  color: #000;
+  box-shadow: var(--glow-yellow);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.2);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--neon-blue);
+  border: 2px solid var(--neon-blue);
+  box-shadow: var(--glow-blue);
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 180, 255, 0.1);
+}
+
+/* Instructions */
+.instructions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 11px;
+  color: #777;
+  text-align: center;
+}
+
+.inst-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.key {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-family: var(--font-arcade);
+  font-size: 10px;
+  color: #ccc;
+}
+
+/* Hi score */
+.hi-score-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.hs-label {
+  font-size: 10px;
+  color: #555;
+  letter-spacing: 4px;
+}
+
+.hs-value {
+  font-family: 'Press Start 2P', var(--font-arcade);
+  font-size: 18px;
+  color: var(--neon-pink);
+  text-shadow: var(--glow-pink);
+}
+
+/* ─── Pause Screen ──────────────────────────────────────────────────────────── */
+
+.pause-screen {
+  background: rgba(0, 0, 20, 0.88);
+  backdrop-filter: blur(4px);
+}
+
+.pause-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 40px 32px;
+  border: 1px solid rgba(0, 180, 255, 0.3);
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 30px rgba(0, 180, 255, 0.1);
+  background: rgba(0, 0, 30, 0.6);
+  min-width: 280px;
+}
+
+.pause-title {
+  font-family: 'Press Start 2P', var(--font-arcade);
+  font-size: 24px;
+  color: var(--neon-blue);
+  text-shadow: var(--glow-blue);
+  animation: neonPulseBlue 1.5s infinite;
+}
+
+.pause-hint {
+  font-size: 11px;
+  color: #666;
+  letter-spacing: 1px;
+}

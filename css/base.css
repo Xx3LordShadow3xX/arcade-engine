@@ -1,0 +1,31 @@
+/* base.css — Reset & global base styles */
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--color-bg);
+  color: #fff;
+  font-family: var(--font-mono);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: var(--font-arcade);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+canvas {
+  display: block;
+  image-rendering: pixelated;
+}

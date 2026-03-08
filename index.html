@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arcade Engine — Pac-Man</title>
+  <meta name="description" content="A professional Pac-Man remake built on a modular arcade engine." />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/ui.css" />
+
+  <!-- Favicon inline SVG -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23ffe000'/><polygon points='50,50 95,25 95,75' fill='%23000010'/></svg>" />
+</head>
+<body>
+  <div id="app">
+    <div id="canvas-wrapper">
+      <canvas id="game-canvas" aria-label="Pac-Man game canvas"></canvas>
+    </div>
+    <!-- UI overlays are injected here by MenuSystem -->
+    <div id="overlay"></div>
+  </div>
+
+  <!-- Module entry point -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
