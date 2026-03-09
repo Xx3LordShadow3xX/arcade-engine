@@ -71,9 +71,10 @@ export default class PacmanGame {
 
     // Layout
     this._mazeOffsetX = 0;
-    this._mazeOffsetY = 40; // space for HUD at top
+    this._mazeOffsetY = 48;
     this._mazeWidth   = this._maze.cols * TILE_SIZE;
     this._mazeHeight  = this._maze.rows * TILE_SIZE;
+    this._scale       = 1;
 
     // Particle background
     this._bgStars = Array.from({ length: 60 }, () => ({
@@ -290,16 +291,26 @@ export default class PacmanGame {
     const w = renderer.width;
     const h = renderer.height;
 
+    const hudH = 48;
+    const availH = h - hudH;
+
+    // Dynamic scale: fit maze to available space with a small margin
+    const scale = Math.min(w / this._mazeWidth, availH / this._mazeHeight) * 0.94;
+    this._scale = scale;
+    const scaledW = this._mazeWidth  * scale;
+    const scaledH = this._mazeHeight * scale;
+
     // Compute centered maze offset
-    this._mazeOffsetX = Math.floor((w - this._mazeWidth) / 2);
-    this._mazeOffsetY = 48;
+    this._mazeOffsetX = Math.floor((w - scaledW) / 2);
+    this._mazeOffsetY = hudH + Math.floor((availH - scaledH) / 2);
 
     // Draw starfield background
     this._renderBackground(renderer, w, h);
 
-    // Save and translate to maze space
+    // Save, translate and scale to maze space
     ctx.save();
     ctx.translate(this._mazeOffsetX, this._mazeOffsetY);
+    ctx.scale(scale, scale);
 
     // Maze
     this._maze.render(renderer);
@@ -307,11 +318,8 @@ export default class PacmanGame {
     // Pellet system (score popups)
     this._pellets.render(renderer);
 
-    // Ghosts (hide during ghost-eaten freeze except frozen ghost)
+    // Ghosts
     for (const g of this._ghosts) {
-      if (this._state === STATE.GHOST_EATEN && g !== this._frozenGhost) {
-        // Still render all ghosts
-      }
       g.render(renderer);
     }
 
@@ -322,10 +330,10 @@ export default class PacmanGame {
 
     ctx.restore();
 
-    // HUD on top
+    // HUD on top (unscaled)
     this._renderHUD(renderer, w, h);
 
-    // Overlay screens
+    // Overlay screens (unscaled)
     if (this._state === STATE.READY)          this._renderReadyScreen(renderer, w, h);
     if (this._state === STATE.GAME_OVER)      this._renderGameOver(renderer, w, h);
     if (this._state === STATE.LEVEL_COMPLETE) this._renderLevelComplete(renderer, w, h);
@@ -390,8 +398,8 @@ export default class PacmanGame {
 
   _renderReadyScreen(renderer, w, h) {
     const cx = w / 2;
-    const mazeTop = this._mazeOffsetY;
-    const cy = mazeTop + this._mazeHeight / 2 - 20;
+    const scaledH = this._mazeHeight * this._scale;
+    const cy = this._mazeOffsetY + scaledH / 2 - 20;
 
     renderer.ctx.save();
     renderer.ctx.fillStyle = 'rgba(0,0,10,0.4)';

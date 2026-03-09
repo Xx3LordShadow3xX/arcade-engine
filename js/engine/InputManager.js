@@ -34,7 +34,7 @@ class InputManagerClass {
     this._bound = false;
   }
 
-  static get KEYS() {
+  get KEYS() {
     return {
       UP:    'ArrowUp',
       DOWN:  'ArrowDown',
